@@ -1,0 +1,104 @@
+\documentclass{article}
+
+\usepackage{tikz} 
+\usetikzlibrary{automata, positioning, arrows} 
+
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{fullpage}
+\usepackage{color}
+\usepackage{parskip}
+\usepackage{hyperref}
+  \hypersetup{
+    colorlinks = true,
+    urlcolor = blue,       % color of external links using \href
+    linkcolor= blue,       % color of internal links 
+    citecolor= blue,       % color of links to bibliography
+    filecolor= blue,        % color of file links
+    }
+    
+\usepackage{listings}
+\usepackage[utf8]{inputenc}                                                    
+\usepackage[T1]{fontenc}                                                       
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=haskell,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\newtheoremstyle{theorem}
+  {\topsep}   % ABOVESPACE
+  {\topsep}   % BELOWSPACE
+  {\itshape\/}  % BODYFONT
+  {0pt}       % INDENT (empty value is the same as 0pt)
+  {\bfseries} % HEADFONT
+  {.}         % HEADPUNCT
+  {5pt plus 1pt minus 1pt} % HEADSPACE
+  {}          % CUSTOM-HEAD-SPEC
+\theoremstyle{theorem} 
+   \newtheorem{theorem}{Theorem}[section]
+   \newtheorem{corollary}[theorem]{Corollary}
+   \newtheorem{lemma}[theorem]{Lemma}
+   \newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+   \newtheorem{definition}[theorem]{Definition}
+   \newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}    
+  \newtheorem{remark}[theorem]{Remark}
+
+\title{CPSC-354 Report}
+\author{Davis Wood  \\ Chapman University}
+
+\date{\today} 
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\end{abstract}
+
+\setcounter{tocdepth}{3}
+\tableofcontents
+
+\section{Solution}\label{intro}
+$let rec fact = \lambda n. if n=0 then 1 else n * fact (n-1) in fact 3$ \\
+-> $let fact = (fix(\lambda fact.\lambda n.if n=0 then 1 else n * fact (n-1))) in fact 3$ \\
+-> $(\lambda fact.\lambda n.fact 3) (fix(\lambda fact.if n=0 then 1 else n * fact (n-1)))$ \\
+-> $fix(\lambda fact.\lambda n.if n=0 then 1 else n * fact (n-1)) 3$ \\
+-> $((\lambda fact.\lambda n.if n=0 then 1 else n * fact (n-1)) (fix(\lambda fact.\lambda n.f n=0 then 1 else n * fact (n-1)))) 3$ \\
+-> $(\lambda n.(if n=0 then 1 else n * (fix(\lambda fact.\lambda n.if n=0 then 1 else n * fact (n-1))) (n-1))) 3$ \\
+-> $(if 3=0 then 1 else 3 * (fix(\lambda fact.\lambda n.if n=0 then 1 else n * fact (n-1))) (3-1))$ \\
+-> $3 * (fix(\lambda fact.\lambda n.if n=0 then 1 else n * fact (n-1))) 2$ \\
+-> $3 * ((\lambda fact.\lambda n.if n=0 then 1 else n * fact (n-1)) fix(\lambda fact.\lambda n.if n=0 then 1 else n * fact (n-1))) 2$ \\
+-> $3 * ((\lambda n.if n=0 then 1 else n * (fix(\lambda fact.\lambda n.if n=0 then 1 else n * fact (n-1))) (n-1))) 2$ \\
+-> $3 * ((if 2=0 then 1 else 2 * (fix(\lambda fact.\lambda n.if n=0 then 1 else n * fact (n-1))) (2-1)))$ \\
+-> $3 * 2 * (fix(\lambda fact.\lambda n.if n=0 then 1 else n * fact (n-1))) (1)$ \\
+-> $3 * 2 * ((\lambda fact.\lambda n.if n=0 then 1 else n * fact (n-1)) fix(\lambda fact.\lambda n.if n=0 then 1 else n * fact (n-1))) (1)$ \\
+-> $3 * 2 * ((\lambda n.if n=0 then 1 else n * (fix(\lambda fact.\lambda n.if n=0 then 1 else n * fact (n-1))) (n-1))) (1)$ \\
+-> $3 * 2 * ((if 1=0 then 1 else 1 * (fix(\lambda fact.\lambda n.if n=0 then 1 else n * fact (n-1))) (1-1)))$ \\
+-> $3 * 2 * 1 * (fix(\lambda fact.\lambda n.if n=0 then 1 else n * fact (n-1))) (0)$ \\
+-> $3 * 2 * 1 * ((\lambda fact.\lambda n.if n=0 then 1 else n * fact (n-1)) fix(\lambda fact.\lambda n.if n=0 then 1 else n * fact (n-1))) (0)$ \\
+-> $3 * 2 * 1 * ((\lambda n.if n=0 then 1 else n * (fix(\lambda fact.\lambda n.if n=0 then 1 else n * fact (n-1))) (n-1))) (0)$ \\
+-> $3 * 2 * 1 * ((if 0=0 then 1 else 0 * (fix(\lambda fact.\lambda n.if n=0 then 1 else n * fact (n-1))) (0-1))) (0)$ \\
+-> $3 * 2 * 1 * 1$ \\
+-> $6$
+\end{document}
